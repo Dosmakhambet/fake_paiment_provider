@@ -1,0 +1,20 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/fake_provider
+    username: postgres
+    password: postgres
+
+  flyway:
+      url: jdbc:postgresql://localhost:5432/fake_provider
+      user: postgres
+      password: postgres
+
+jwt:
+  password:
+    encoder:
+      secret: 01638ba39284b9cfe55283ec
+      iteration: 64
+      keylength: 256
+  secret: 901872f6b693b9e755ee7e3bba8870299f038c5a07fd6f9b7e222364c2b6d2cc
+  expiration: 3600000
+  issuer: fake_provider
