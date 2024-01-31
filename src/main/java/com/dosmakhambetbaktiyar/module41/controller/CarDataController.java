@@ -1,6 +1,7 @@
 package com.dosmakhambetbaktiyar.module41.controller;
 
 import com.dosmakhambetbaktiyar.module41.dto.CartDataDto;
+import com.dosmakhambetbaktiyar.module41.mapper.CartDataMapper;
 import com.dosmakhambetbaktiyar.module41.service.CartDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,26 +16,29 @@ public class CarDataController {
     @Autowired
     private CartDataService service;
 
+    @Autowired
+    private CartDataMapper mapper;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CartDataDto> createCartData(@RequestBody CartDataDto cartDataDto) {
         System.out.println(cartDataDto);
-        return service.save(cartDataDto.toEntity()).map(CartDataDto::toDto);
+        return service.save(mapper.toEntity(cartDataDto)).map(mapper::toDto);
     }
 
     @GetMapping("/{id}")
     public Mono<CartDataDto> getCartDataById(@PathVariable("id") Long id) {
-        return service.findById(id).map(CartDataDto::toDto);
+        return service.findById(id).map(mapper::toDto);
     }
 
     @GetMapping
     public Flux<CartDataDto> getAllCartData() {
-        return service.findAll().map(CartDataDto::toDto);
+        return service.findAll().map(mapper::toDto);
     }
 
     @PutMapping("/{id}")
     public Mono<CartDataDto> updateCartData(@RequestBody CartDataDto cartDataDto) {
-        return service.update(cartDataDto.toEntity()).map(CartDataDto::toDto);
+        return service.update(mapper.toEntity(cartDataDto)).map(mapper::toDto);
     }
 
     @DeleteMapping("/{id}")

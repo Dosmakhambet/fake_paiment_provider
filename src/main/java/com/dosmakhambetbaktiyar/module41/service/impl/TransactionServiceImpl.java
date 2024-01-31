@@ -9,8 +9,6 @@ import com.dosmakhambetbaktiyar.module41.repository.TransactionRepository;
 import com.dosmakhambetbaktiyar.module41.service.CartDataService;
 import com.dosmakhambetbaktiyar.module41.service.CustomerService;
 import com.dosmakhambetbaktiyar.module41.service.TransactionService;
-import io.r2dbc.spi.Parameters;
-import io.r2dbc.spi.R2dbcType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Service;

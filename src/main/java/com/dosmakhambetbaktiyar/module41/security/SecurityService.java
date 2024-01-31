@@ -16,6 +16,7 @@ import java.util.*;
 public class SecurityService {
 
     private final UserService userService;
+
     private final PBFDK2Encoder passwordEncoder;
 
     @Value("${jwt.secret}")
@@ -26,6 +27,7 @@ public class SecurityService {
     private String issuer;
 
     private TokenDetails generateToken(User user){
+
         Map<String, Object> claims = new HashMap<>(){{
             put("role", user.getRole());
             put("username", user.getUsername());

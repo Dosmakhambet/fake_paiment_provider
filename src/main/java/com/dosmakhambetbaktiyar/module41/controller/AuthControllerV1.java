@@ -8,21 +8,17 @@ import com.dosmakhambetbaktiyar.module41.security.CustomPrincipal;
 import com.dosmakhambetbaktiyar.module41.security.SecurityService;
 import com.dosmakhambetbaktiyar.module41.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthControllerV1 {
-    @Autowired
-    private SecurityService securityService;
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserMapper userMapper;
+    private final SecurityService securityService;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public Mono<UserDto> register(@RequestBody UserDto userDto){
