@@ -10,15 +10,17 @@ import reactor.core.publisher.Mono;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class BearerTokenAuthenticationConverter implements ServerAuthenticationConverter {
-    private final JwtHandler jwtHandler;
-    private static final String bearerPrefix = "Bearer ";
-    private static final Function<String, Mono<String>> getToken = authHeader -> Mono.justOrEmpty(authHeader.substring(bearerPrefix.length()));
+public class BaicAuthenticationConverter implements ServerAuthenticationConverter {
+
+    private static final String basicPrefix = "Basic ";
+    private static final Function<String, Mono<String>> getToken = authHeader -> Mono.justOrEmpty(authHeader.substring(basicPrefix.length()));
+
+    private final BasicHandler basicHandler;
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
         return extractToken(exchange)
                 .flatMap(getToken)
-                .flatMap(jwtHandler::verify)
+                .flatMap(basicHandler::verify)
                 .flatMap(UserAuthenticationBearer::create);
     }
 

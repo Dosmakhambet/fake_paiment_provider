@@ -2,6 +2,7 @@ package com.dosmakhambetbaktiyar.module41.security;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 public class NoOpPasswordEncoder implements PasswordEncoder {
     @Override
     public String encode(CharSequence rawPassword) {

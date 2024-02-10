@@ -1,5 +1,6 @@
 package com.dosmakhambetbaktiyar.module41.security;
 
+import com.dosmakhambetbaktiyar.module41.service.MerchantService;
 import com.dosmakhambetbaktiyar.module41.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -11,12 +12,18 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthenticationManager implements ReactiveAuthenticationManager {
 
-    private final UserService userService;
+    private final MerchantService merchantService;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         CustomPrincipal principal = (CustomPrincipal) authentication.getPrincipal();
-        return userService.findById(principal.getId())
-                .map(user -> authentication);
+        return merchantService.findById(principal.getName())
+                .map(merchant -> {
+                    if (merchant.getSecretKey().equals(principal.getSecretKey())) {
+                        return authentication;
+                    } else {
+                        throw new RuntimeException("Invalid secret key");
+                    }
+                });
     }
 }

@@ -35,6 +35,11 @@ public class CarDataController {
         return service.findAll().map(mapper::toDto);
     }
 
+    @GetMapping("/2")
+    public Mono<String> getAllCartData2() {
+        return service.findAll2();
+    }
+
     @PutMapping("/{id}")
     public Mono<CartDataDto> updateCartData(@RequestBody CartDataDto cartDataDto) {
         return service.update(mapper.toEntity(cartDataDto)).map(mapper::toDto);

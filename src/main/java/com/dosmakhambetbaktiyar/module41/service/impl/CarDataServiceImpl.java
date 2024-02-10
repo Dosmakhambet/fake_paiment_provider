@@ -2,10 +2,12 @@ package com.dosmakhambetbaktiyar.module41.service.impl;
 
 import com.dosmakhambetbaktiyar.module41.model.CartData;
 import com.dosmakhambetbaktiyar.module41.repository.CartDataRepository;
+import com.dosmakhambetbaktiyar.module41.security.CustomPrincipal;
 import com.dosmakhambetbaktiyar.module41.service.CartDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,9 +32,22 @@ public class CarDataServiceImpl implements CartDataService {
     @Override
     public Flux<CartData> findAll() {
 
-//        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-
         return repository.findAll();
+    }
+
+    @Override
+    public Mono<String> findAll2() {
+
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(Authentication::getPrincipal)
+                .cast(CustomPrincipal.class) // Replace with your principal class
+                .map(CustomPrincipal::getName) // Replace with your method to get user id
+                .flatMap(userId -> {
+                    // Use userId here
+                    System.out.println("User ID: " + userId);
+                    return Mono.just(userId);
+                });
     }
 
     @Override

@@ -10,6 +10,6 @@ import java.security.Principal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomPrincipal implements Principal {
-    private Long id;
     private String name;
+    private String secretKey;
 }
