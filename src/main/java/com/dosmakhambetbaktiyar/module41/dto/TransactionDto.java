@@ -28,6 +28,10 @@ public class TransactionDto implements Serializable {
     private String notificationUrl;
     private TransactionStatus status;
     private String message;
+    private Long customerId;
+    private Long cartDataId;
+    private Long walletId;
     private CustomerDto customer;
     private CartDataDto cartData;
+    private WalletDto wallet;
 }

@@ -9,8 +9,6 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class CustomerDto implements Serializable {
     private Long id;
     private String firstName;

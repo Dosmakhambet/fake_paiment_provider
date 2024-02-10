@@ -13,6 +13,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -22,18 +23,24 @@ import java.util.UUID;
 @Table("payout")
 public class Payout implements Serializable {
     @Id
-    private UUID paymentId;
-    private PaymentMethod paymentMethod;
+    private UUID payoutId;
     private Double amount;
     private Currency currency;
     private Language language;
     private String notificationUrl;
     private PayoutStatus status;
     private String message;
+    private Long customerId;
+    private Long cartDataId;
+    private Long walletId;
+    private UUID transactionId;
     @Transient
     private CartData cartData;
     @Transient
     private Customer customer;
-
+    @Transient
+    private Wallet wallet;
+    @Transient
+    private Transaction transaction;
 
 }

@@ -22,7 +22,6 @@ public class CarDataController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CartDataDto> createCartData(@RequestBody CartDataDto cartDataDto) {
-        System.out.println(cartDataDto);
         return service.save(mapper.toEntity(cartDataDto)).map(mapper::toDto);
     }
 

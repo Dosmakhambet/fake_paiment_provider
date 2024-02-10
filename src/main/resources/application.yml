@@ -18,3 +18,6 @@ jwt:
   secret: 901872f6b693b9e755ee7e3bba8870299f038c5a07fd6f9b7e222364c2b6d2cc
   expiration: 3600000
   issuer: fake_provider
+
+server:
+  port: 8083

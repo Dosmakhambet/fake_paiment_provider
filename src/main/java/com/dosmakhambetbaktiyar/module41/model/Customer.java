@@ -10,6 +10,11 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 
+// Merchant
+// Счет ( кашелек )
+// Call back сохраняем
+// 5 попыток отправки транзакции
+//
 @Data
 @Builder
 @NoArgsConstructor

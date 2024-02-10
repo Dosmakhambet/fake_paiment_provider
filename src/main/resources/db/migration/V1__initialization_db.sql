@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS transaction
 
 CREATE TABLE IF NOT EXISTS payout
 (
-    payment_id       UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    payout_id       UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     payment_method   VARCHAR(255),
     amount           DOUBLE PRECISION,
     currency         VARCHAR(255),

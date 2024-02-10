@@ -1,6 +1,7 @@
 package com.dosmakhambetbaktiyar.module41.controller;
 
 import com.dosmakhambetbaktiyar.module41.dto.TransactionDto;
+import com.dosmakhambetbaktiyar.module41.dto.TransactionResponseDto;
 import com.dosmakhambetbaktiyar.module41.mapper.TransactionMapper;
 import com.dosmakhambetbaktiyar.module41.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +32,13 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Mono<TransactionDto> createTransaction(@RequestBody TransactionDto transactionDto){
-        return service.save(mapper.toEntity(transactionDto)).map(mapper::toDto);
+    public Mono<TransactionResponseDto> createTransaction(@RequestBody TransactionDto transactionDto){
+        return service.save(mapper.toEntity(transactionDto)).map(mapper::toResponseDto);
     }
 
     @PutMapping("/{id}")
-    public Mono<TransactionDto> updateTransaction(@RequestBody TransactionDto transactionDto){
-        return service.update(mapper.toEntity(transactionDto)).map(mapper::toDto);
+    public Mono<TransactionResponseDto> updateTransaction(@RequestBody TransactionDto transactionDto){
+        return service.update(mapper.toEntity(transactionDto)).map(mapper::toResponseDto);
     }
 
     @DeleteMapping("/{id}")
