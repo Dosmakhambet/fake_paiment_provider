@@ -1,10 +1,12 @@
 package com.dosmakhambetbaktiyar.module41.service.impl;
 
+import com.dosmakhambetbaktiyar.module41.enums.TransactionStatus;
 import com.dosmakhambetbaktiyar.module41.model.Transaction;
 import com.dosmakhambetbaktiyar.module41.repository.CartDataRepository;
 import com.dosmakhambetbaktiyar.module41.repository.TransactionRepository;
 import com.dosmakhambetbaktiyar.module41.repository.WalletRepository;
 import com.dosmakhambetbaktiyar.module41.service.CustomerService;
+import com.dosmakhambetbaktiyar.module41.service.MerchantService;
 import com.dosmakhambetbaktiyar.module41.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,19 @@ public class TransactionServiceImpl implements TransactionService {
     private final CartDataRepository cartDataRepository;
     private final CustomerService customerService;
     private final WalletRepository walletRepository;
+    private final MerchantService merchantService;
 
     @Override
     public Mono<Transaction> save(Transaction transaction) {
-        return repository.save(transaction);
+
+        return merchantService.getMerchantId()
+                .flatMap(merchantId ->
+                        walletRepository.findByMerchantIdAndCurrency(merchantId, transaction.getCurrency())
+                ).flatMap(wallet -> {
+                    transaction.setWalletId(wallet.getId());
+                    transaction.setStatus(TransactionStatus.IN_PROGRESS);
+                    return repository.save(transaction);
+                });
     }
 
     @Override

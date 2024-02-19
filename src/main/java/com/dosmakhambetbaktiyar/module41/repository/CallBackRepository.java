@@ -9,4 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface CallBackRepository extends ReactiveCrudRepository<CallBack, Long>{
+    Flux<CallBack> findByPayoutId(UUID payoutId);
 }

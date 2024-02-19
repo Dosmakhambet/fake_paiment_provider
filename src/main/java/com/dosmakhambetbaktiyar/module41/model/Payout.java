@@ -2,7 +2,6 @@ package com.dosmakhambetbaktiyar.module41.model;
 
 import com.dosmakhambetbaktiyar.module41.enums.Currency;
 import com.dosmakhambetbaktiyar.module41.enums.Language;
-import com.dosmakhambetbaktiyar.module41.enums.PaymentMethod;
 import com.dosmakhambetbaktiyar.module41.enums.PayoutStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +32,6 @@ public class Payout implements Serializable {
     private Long customerId;
     private Long cartDataId;
     private Long walletId;
-    private UUID transactionId;
     @Transient
     private CartData cartData;
     @Transient
@@ -41,6 +39,5 @@ public class Payout implements Serializable {
     @Transient
     private Wallet wallet;
     @Transient
-    private Transaction transaction;
-
+    private List<CallBack> callBacks;
 }

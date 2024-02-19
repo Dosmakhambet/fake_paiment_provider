@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+Client -> Merhcat: Send Request
+Merhcat -> Database: Basic Authentication
+Database --> Merhcat: Authentication Response
+
+Merhcat -> Database: Add record (status: progress)
+Database --> Merhcat: Record Added
+Merhcat --> Client: Send Response
+
+note over Merhcat, Provider: [Every 30 minutes]
+
+Merhcat -> Provider: Send Payout
+alt success
+    Provider --> Merhcat: Success
+    Merhcat -> Database: Update record (status: success)
+    Database --> Merhcat: Record Updated
+    Merhcat -> Merhcat: Send Callback
+else not success
+    loop 5 times
+        Merhcat -> Provider: Retry Send Payout
+        Provider --> Merhcat: Failure
+    end
+    Merhcat -> Database: Update record (status: error)
+    Database --> Merhcat: Record Updated
+end
+
+@enduml

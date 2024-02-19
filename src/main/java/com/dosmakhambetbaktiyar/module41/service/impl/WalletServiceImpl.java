@@ -1,5 +1,6 @@
 package com.dosmakhambetbaktiyar.module41.service.impl;
 
+import com.dosmakhambetbaktiyar.module41.enums.Currency;
 import com.dosmakhambetbaktiyar.module41.model.Wallet;
 import com.dosmakhambetbaktiyar.module41.repository.PayoutRepository;
 import com.dosmakhambetbaktiyar.module41.repository.TransactionRepository;
@@ -64,4 +65,10 @@ public class WalletServiceImpl implements WalletService {
     public void delete(Wallet wallet) {
         repository.delete(wallet);
     }
+
+    @Override
+    public Mono<Wallet> findByMerchantIdAndCurrency(String merchantId, Currency currency){
+        return repository.findByMerchantIdAndCurrency(merchantId, currency);
+    }
+
 }
