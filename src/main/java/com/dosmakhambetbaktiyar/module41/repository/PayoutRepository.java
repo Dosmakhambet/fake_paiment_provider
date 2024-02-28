@@ -1,5 +1,6 @@
 package com.dosmakhambetbaktiyar.module41.repository;
 
+import com.dosmakhambetbaktiyar.module41.enums.PayoutStatus;
 import com.dosmakhambetbaktiyar.module41.model.Payout;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,8 @@ import java.util.UUID;
 public interface PayoutRepository extends ReactiveCrudRepository<Payout, UUID> {
 
     Flux<Payout> findByWalletId(Long walletId);
+
+    Flux<Payout> findByStatus(PayoutStatus status);
+
+    Flux<Payout> findAllByStatus(PayoutStatus status);
 }

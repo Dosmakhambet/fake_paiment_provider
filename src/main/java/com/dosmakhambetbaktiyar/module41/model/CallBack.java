@@ -16,13 +16,13 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("payout_callback")
+@Table("call_back")
 public class CallBack {
     @Id
     private Long id;
     private PayoutStatus status;
     private LocalDateTime createdAt;
-    private UUID transactionId;
+    private UUID payoutId;
     @Transient
-    private Transaction transaction;
+    private Payout payout;
 }

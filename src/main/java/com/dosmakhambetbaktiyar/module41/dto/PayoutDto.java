@@ -5,7 +5,6 @@ import com.dosmakhambetbaktiyar.module41.enums.Language;
 import com.dosmakhambetbaktiyar.module41.enums.PaymentMethod;
 import com.dosmakhambetbaktiyar.module41.enums.PayoutStatus;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.io.Serializable;
@@ -25,9 +24,6 @@ public class PayoutDto implements Serializable {
     private String notificationUrl;
     private PayoutStatus status;
     private String message;
-    private Long customerId;
-    private Long cartDataId;
-    private Long walletId;
     private CustomerDto customer;
     private CartDataDto cartData;
     private WalletDto wallet;

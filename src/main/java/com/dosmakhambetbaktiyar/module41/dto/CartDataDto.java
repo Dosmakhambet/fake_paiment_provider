@@ -3,7 +3,6 @@ package com.dosmakhambetbaktiyar.module41.dto;
 import lombok.*;
 
 import java.io.Serializable;
-//TODO: mapstuct
 
 @Data
 @Builder

@@ -66,4 +66,9 @@ public class CarDataServiceImpl implements CartDataService {
     public void delete(CartData cartData) {
         repository.delete(cartData);
     }
+
+    @Override
+    public Mono<CartData> findByCartNumber(String cartNumber) {
+        return repository.findByCartNumber(cartNumber);
+    }
 }

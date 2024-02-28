@@ -28,17 +28,25 @@ public class PayoutServiceImpl implements PayoutService {
     public Mono<Payout> save(Payout payout) {
         return merchantService.getMerchantId()
                 .flatMap(merchantId ->
-                        walletRepository.findByMerchantIdAndCurrency(merchantId, payout.getCurrency()))
-                .flatMap(wallet -> {
-                    payout.setWalletId(wallet.getId());
-                    payout.setStatus(PayoutStatus.IN_PROGRESS);
-                    return repository.save(payout);
-                });
+                        Mono.zip(
+                                walletRepository.findByMerchantIdAndCurrency(merchantId, payout.getCurrency()),
+                                cartDataRepository.findByCartNumber(payout.getCartData().getCartNumber())
+                                )
+                                .flatMap(tuple -> {
+                                    payout.setWalletId(tuple.getT1().getId());
+                                    payout.setCartDataId(tuple.getT2().getId());
+                                    payout.setCustomerId(payout.getCustomer().getId());
+                                    payout.setStatus(PayoutStatus.IN_PROGRESS);
+                                    payout.setMessage("OK");
+                                    return repository.save(payout);
+                                })
+
+                );
     }
 
     @Override
     public Mono<Payout> findById(UUID uuid) {
-        return Mono.zip(repository.findById(uuid),callBackRepository.findByPayoutId(uuid).or(Flux.empty()).collectList())
+        return Mono.zip(repository.findById(uuid), callBackRepository.findByPayoutId(uuid).or(Flux.empty()).collectList())
                 .map(tuple -> {
                     Payout payout = tuple.getT1();
                     payout.setCallBacks(tuple.getT2());
@@ -59,10 +67,10 @@ public class PayoutServiceImpl implements PayoutService {
     public Flux<Payout> findAll() {
         return repository.findAll()
                 .flatMap(payout -> Mono.zip(
-                        callBackRepository.findByPayoutId(payout.getPayoutId()).or(Flux.empty()).collectList(),
-                        cartDataRepository.findById(payout.getCartDataId()),
-                        customerRepository.findById(payout.getCustomerId()),
-                        walletRepository.findById(payout.getWalletId()))
+                                callBackRepository.findByPayoutId(payout.getPayoutId()).or(Flux.empty()).collectList(),
+                                cartDataRepository.findById(payout.getCartDataId()),
+                                customerRepository.findById(payout.getCustomerId()),
+                                walletRepository.findById(payout.getWalletId()))
                         .map(tuple -> {
                             payout.setCartData(tuple.getT2());
                             payout.setCustomer(tuple.getT3());
@@ -87,4 +95,10 @@ public class PayoutServiceImpl implements PayoutService {
     public void delete(Payout payout) {
         repository.delete(payout);
     }
+
+    @Override
+    public Flux<Payout> findByStatus(PayoutStatus status) {
+        return repository.findAllByStatus(status);
+    }
+
 }

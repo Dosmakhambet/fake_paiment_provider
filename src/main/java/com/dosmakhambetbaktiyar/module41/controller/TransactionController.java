@@ -4,7 +4,7 @@ import com.dosmakhambetbaktiyar.module41.dto.TransactionDto;
 import com.dosmakhambetbaktiyar.module41.dto.TransactionResponseDto;
 import com.dosmakhambetbaktiyar.module41.mapper.TransactionMapper;
 import com.dosmakhambetbaktiyar.module41.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,21 +12,20 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/transaction")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/payments/transaction/")
 public class TransactionController {
 
-    @Autowired
-    private TransactionService service;
+    private final TransactionService service;
 
-    @Autowired
-    private TransactionMapper mapper;
+    private final TransactionMapper mapper;
 
-    @GetMapping("")
+    @GetMapping("/list")
     public Flux<TransactionDto> getAllTransactions(){
         return service.findAll().map(mapper::toDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/details")
     public Mono<TransactionDto> getTransactionById(@PathVariable("id") UUID id){
         return service.findById(id).map(mapper::toDto);
     }

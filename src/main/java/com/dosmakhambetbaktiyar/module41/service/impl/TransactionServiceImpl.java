@@ -29,12 +29,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         return merchantService.getMerchantId()
                 .flatMap(merchantId ->
-                        walletRepository.findByMerchantIdAndCurrency(merchantId, transaction.getCurrency())
-                ).flatMap(wallet -> {
-                    transaction.setWalletId(wallet.getId());
-                    transaction.setStatus(TransactionStatus.IN_PROGRESS);
-                    return repository.save(transaction);
-                });
+                        Mono.zip(
+                                walletRepository.findByMerchantIdAndCurrency(merchantId, transaction.getCurrency()),
+                                cartDataRepository.findByCartNumber(transaction.getCartData().getCartNumber())
+                        ).flatMap(tuple -> {
+                            transaction.setWalletId(tuple.getT1().getId());
+                            transaction.setCartDataId(tuple.getT2().getId());
+                            transaction.setCustomerId(transaction.getCustomer().getId());
+                            transaction.setStatus(TransactionStatus.IN_PROGRESS);
+                            return repository.save(transaction);
+                        })
+                );
     }
 
     @Override
@@ -42,9 +47,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         return repository.findById(uuid)
                 .flatMap(transaction -> Mono.zip(
-                        cartDataRepository.findById(transaction.getCartDataId()),
-                        customerService.findById(transaction.getCustomerId()),
-                        walletRepository.findById(transaction.getWalletId()))
+                                cartDataRepository.findById(transaction.getCartDataId()),
+                                customerService.findById(transaction.getCustomerId()),
+                                walletRepository.findById(transaction.getWalletId()))
                         .map(tuples -> {
                             transaction.setCartData(tuples.getT1());
                             transaction.setCustomer(tuples.getT2());
@@ -59,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
     public Flux<Transaction> findAll() {
 
         return repository.findAll().
-                flatMap(transaction ->Mono.zip(
+                flatMap(transaction -> Mono.zip(
                                 cartDataRepository.findById(transaction.getCartDataId()),
                                 customerService.findById(transaction.getCustomerId()),
                                 walletRepository.findById(transaction.getWalletId()))
@@ -87,5 +92,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void delete(Transaction transaction) {
         repository.delete(transaction);
+    }
+
+    public Flux<Transaction> findByStatus(TransactionStatus status) {
+        return repository.findByStatus(status);
     }
 }
