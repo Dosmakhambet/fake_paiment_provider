@@ -16,7 +16,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PayoutServiceImpl implements PayoutService {
 
-
     private final PayoutRepository repository;
     private final CallBackRepository callBackRepository;
     private final CartDataRepository cartDataRepository;
@@ -26,6 +25,19 @@ public class PayoutServiceImpl implements PayoutService {
 
     @Override
     public Mono<Payout> save(Payout payout) {
+
+        if(payout.getCustomer() == null || payout.getCartData() == null){
+            return Mono.error(new IllegalArgumentException("Customer and CartData must be present"));
+        }
+
+        if(payout.getCustomer().getId() == null || payout.getCartData().getCartNumber() == null){
+            return Mono.error(new IllegalArgumentException("Customer and CartData must have id or cartNumber"));
+        }
+
+        if(payout.getPayoutId() != null){
+            return Mono.error(new IllegalArgumentException("PayoutId must be null"));
+        }
+
         return merchantService.getMerchantId()
                 .flatMap(merchantId ->
                         Mono.zip(
@@ -87,12 +99,16 @@ public class PayoutServiceImpl implements PayoutService {
 
     @Override
     public Mono<Void> deleteById(UUID uuid) {
-        repository.deleteById(uuid);
-        return null;
+
+        return repository.deleteById(uuid);
     }
 
     @Override
     public void delete(Payout payout) {
+        if(payout.getPayoutId() == null){
+            throw new IllegalArgumentException("PayoutId must not be null");
+        }
+
         repository.delete(payout);
     }
 

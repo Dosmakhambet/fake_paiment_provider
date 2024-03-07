@@ -20,6 +20,10 @@ public class WalletServiceImpl implements WalletService {
     private final PayoutRepository payoutRepository;
     @Override
     public Mono<Wallet> save(Wallet wallet) {
+        if(wallet.getId() == null){
+            return Mono.error(new IllegalArgumentException("Id must be null"));
+        }
+        
         return repository.save(wallet);
     }
 

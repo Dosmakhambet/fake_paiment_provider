@@ -1,5 +1,6 @@
 package com.dosmakhambetbaktiyar.module41.service.impl;
 
+import com.dosmakhambetbaktiyar.module41.dto.TransactionFilterDto;
 import com.dosmakhambetbaktiyar.module41.enums.TransactionStatus;
 import com.dosmakhambetbaktiyar.module41.model.Transaction;
 import com.dosmakhambetbaktiyar.module41.repository.CartDataRepository;
@@ -96,5 +97,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     public Flux<Transaction> findByStatus(TransactionStatus status) {
         return repository.findByStatus(status);
+    }
+
+    public Flux<Transaction> findAllFilter(TransactionFilterDto filterDto) {
+        return repository.findAllFilter(filterDto);
     }
 }

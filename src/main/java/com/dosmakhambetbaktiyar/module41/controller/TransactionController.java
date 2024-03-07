@@ -1,6 +1,7 @@
 package com.dosmakhambetbaktiyar.module41.controller;
 
 import com.dosmakhambetbaktiyar.module41.dto.TransactionDto;
+import com.dosmakhambetbaktiyar.module41.dto.TransactionFilterDto;
 import com.dosmakhambetbaktiyar.module41.dto.TransactionResponseDto;
 import com.dosmakhambetbaktiyar.module41.mapper.TransactionMapper;
 import com.dosmakhambetbaktiyar.module41.service.TransactionService;
@@ -21,8 +22,8 @@ public class TransactionController {
     private final TransactionMapper mapper;
 
     @GetMapping("/list")
-    public Flux<TransactionDto> getAllTransactions(){
-        return service.findAll().map(mapper::toDto);
+    public Flux<TransactionDto> getAllTransactions(@RequestBody TransactionFilterDto filterDto){
+        return service.findAllFilter(filterDto).map(mapper::toDto);
     }
 
     @GetMapping("/{id}/details")
