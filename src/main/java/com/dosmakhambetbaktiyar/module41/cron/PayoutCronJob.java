@@ -6,8 +6,12 @@ import com.dosmakhambetbaktiyar.module41.model.CallBack;
 import com.dosmakhambetbaktiyar.module41.repository.WalletRepository;
 import com.dosmakhambetbaktiyar.module41.service.CallBackService;
 import com.dosmakhambetbaktiyar.module41.service.PayoutService;
+import com.dosmakhambetbaktiyar.module41.service.impl.ExternalService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,8 +29,13 @@ public class PayoutCronJob {
     private final PayoutService payoutService;
     private final CallBackService callBackService;
     private final WalletRepository walletRepository;
+    private final ObjectMapper objectMapper;
+    private final ExternalService externalService;
 
-    //TODO: что делать с subscribe внутри метода?
+    @Value("${base.url}")
+    private String BASE_URL;
+
+    //TODO: add remove subscription
     @Scheduled(cron = "0/30 * * * * *")
     public void sendPayout() {
         log.info("Payout cron job");
@@ -45,11 +54,31 @@ public class PayoutCronJob {
                                         payout.setMessage("Payout is successfuly completed");
                                         wallet.setBalance(wallet.getBalance() - payout.getAmount());
 
-                                        return Mono.zip(payoutService.update(payout), walletRepository.save(wallet))
+                                        return externalService.sendPostToExternalService("/payout", payout)
+                                                .doOnNext(responseBody -> {
+                                                    try {
+                                                        String id = objectMapper.readTree(responseBody).get("id").asText();
+                                                        payout.setNotificationUrl(BASE_URL + "/payout/" + id);
+                                                    } catch (JsonProcessingException e) {
+                                                        throw new RuntimeException(e);
+                                                    }
+                                                })
+                                                .then(Mono.zip(payoutService.update(payout), walletRepository.save(wallet)))
                                                 .doOnSuccess(tuple -> log.info("Payout success " + tuple.getT1().getPayoutId()));
                                     } else {
-                                        log.info("Not enough balance");
-                                        return Mono.empty();
+                                        payout.setStatus(PayoutStatus.FAILED);
+                                        payout.setMessage("PAYOUT_MIN_AMOUNT");
+
+                                        return externalService.sendPostToExternalService("/payout", payout)
+                                                .doOnNext(responseBody -> {
+                                                    try {
+                                                        String id = objectMapper.readTree(responseBody).get("id").asText();
+                                                        payout.setNotificationUrl(BASE_URL + "/payout/" + id);
+                                                    } catch (JsonProcessingException e) {
+                                                        throw new RuntimeException(e);
+                                                    }
+                                                })
+                                                .then(payoutService.update(payout));
                                     }
                                 });
                     } else {
