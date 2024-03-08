@@ -11,6 +11,6 @@ spring:
 
 base:
   url: https://65e858db4bb72f0a9c4f041d.mockapi.io/webhook
-  
+
 server:
   port: 8083
