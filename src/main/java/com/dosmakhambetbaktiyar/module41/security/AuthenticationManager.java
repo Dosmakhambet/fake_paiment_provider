@@ -1,7 +1,6 @@
 package com.dosmakhambetbaktiyar.module41.security;
 
 import com.dosmakhambetbaktiyar.module41.service.MerchantService;
-import com.dosmakhambetbaktiyar.module41.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;

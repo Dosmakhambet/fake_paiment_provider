@@ -100,6 +100,6 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public Flux<Transaction> findAllFilter(TransactionFilterDto filterDto) {
-        return repository.findAllFilter(filterDto);
+        return repository.findAllFilter(filterDto.getStartDate(), filterDto.getEndDate());
     }
 }

@@ -13,7 +13,5 @@ public interface PayoutRepository extends ReactiveCrudRepository<Payout, UUID> {
 
     Flux<Payout> findByWalletId(Long walletId);
 
-    Flux<Payout> findByStatus(PayoutStatus status);
-
     Flux<Payout> findAllByStatus(PayoutStatus status);
 }
