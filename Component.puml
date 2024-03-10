@@ -1,0 +1,21 @@
+@startuml
+
+package "Services" {
+    [Transaction Service] as transaction_service
+    [Common Service] as common_service
+    [Payout Service] as payout_service
+    [Authorization Service] as authorization_service
+    [External Mock API Service] as external_service
+}
+
+transaction_service --> authorization_service : Authenticate Request
+payout_service --> authorization_service : Authenticate Request
+
+authorization_service --> common_service : Utilize
+transaction_service --> common_service : Utilize
+payout_service --> common_service : Utilize
+
+transaction_service --> external_service : Interact
+payout_service --> external_service : Interact
+
+@enduml
